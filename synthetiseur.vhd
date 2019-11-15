@@ -10,7 +10,7 @@ library ieee ;
 		MAX10_CLK1_50 : in std_logic;
 		KEY : in  bit_vector(1 downto 0);
 		SW : in std_logic_vector(9 downto 0);
-		GPIO : buffer std_logic_vector (5 downto 0)
+		GPIO : buffer std_logic_vector (10 downto 0)
 		); 
     END synthetiseur;
 	 
@@ -24,8 +24,13 @@ library ieee ;
 	 signal horl100 : std_logic;
 	 Signal adressfal : integer range 0 to 43;
 	 Signal SDI : std_logic;
-	 Signal CS : std_logic;
+	 Signal CSDAC : std_logic;
 	 Signal SCK : std_logic;
+	 
+	 Signal CSMCP : std_logic;
+	 Signal SI : std_logic;
+	 Signal CLK : std_logic;
+	 Signal adressMCP : integer range 0 to 41;
 	 
 	 
 	 Begin
@@ -45,13 +50,13 @@ library ieee ;
 			
 			
 
-			test : Process(horl100)
+			DACTRAM : Process(horl100)
 			
 			begin
 			if rising_edge(horl100)
 			then adressfal <= adressfal + 1;
 				case adressfal is
-				when 0 => CS <= '0'; SDI <= '1';   --choix de la voie B
+				when 0 => CSDAC <= '0'; SDI <= '1';   --choix de la voie B
 				When 1 => SCK <= '1';
 				When 2 => SDI <= '0'; SCK<='0';
 				when 3 => SCK <= '1'; 
@@ -82,26 +87,84 @@ library ieee ;
 				when 28 => SCK <= '0'; SDI <= '0';
 				when 29 => SCK <= '1'; 
 				when 30 => SCK <= '0'; SDI <= '0';
-				when 31 => SCK <= '1'; CS <= '0';
+				when 31 => SCK <= '1'; CSDAC <= '0';
 				when 32 => SCK <= '0';
-				when 33 => SCK <= '0'; SDI <= '0'; CS <= '1';
-				when 34 => SCK <= '0'; SDI <= '0'; CS <= '1';
-				when 35 => SCK <= '0'; SDI <= '0'; CS <= '1';
-				when 36 => SCK <= '0'; SDI <= '0'; CS <= '1';
-				when 37 => SCK <= '0'; SDI <= '0'; CS <= '1';
-				when 38 => SCK <= '0'; SDI <= '0'; CS <= '1';
-				when 39 => SCK <= '0'; SDI <= '0'; CS <= '1';
-				when 40 => SCK <= '0'; SDI <= '0'; CS <= '1';
-				when 41 => SCK <= '0'; SDI <= '0'; CS <= '1';
-				when 42 => SCK <= '0'; SDI <= '0'; CS <= '1';
-				when 43 => SCK <= '0'; SDI <= '0'; CS <= '1'; adressfal <= 0;
+				when 33 => SCK <= '0'; SDI <= '0'; CSDAC <= '1';
+				when 34 => SCK <= '0'; SDI <= '0'; CSDAC <= '1';
+				when 35 => SCK <= '0'; SDI <= '0'; CSDAC <= '1';
+				when 36 => SCK <= '0'; SDI <= '0'; CSDAC <= '1';
+				when 37 => SCK <= '0'; SDI <= '0'; CSDAC <= '1';
+				when 38 => SCK <= '0'; SDI <= '0'; CSDAC <= '1';
+				when 39 => SCK <= '0'; SDI <= '0'; CSDAC <= '1';
+				when 40 => SCK <= '0'; SDI <= '0'; CSDAC <= '1';
+				when 41 => SCK <= '0'; SDI <= '0'; CSDAC <= '1';
+				when 42 => SCK <= '0'; SDI <= '0'; CSDAC <= '1';
+				when 43 => SCK <= '0'; SDI <= '0'; CSDAC <= '1'; adressfal <= 0;
 				when others => SCK <= '0';
-
 				end case;
 				end if;
 			GPIO(0) <= SCK;
 			GPIO(1) <= SDI;
-			GPIO(2) <= CS;
-			end process test;
+			GPIO(2) <= CSDAC;
+			end process DACTRAM;
+			
+			
+			MCPTRAM : Process(horl100)
+			begin 
+			if rising_edge(horl100)
+			then adressMCP <= adressMCP+1;
+			case adressMCP is
+			when 0 => CSMCP <= '0';
+			when 1 => CLK <= '1';
+			when 2 => CLK <='0'; SI <='1';
+			when 3 => CLK <='1';
+			when 4 => CLK <='0';SI<='0';
+			when 5 => CLK <= '1';
+			when 6 => CLK <='0';
+			when 7 => CLK <= '1';
+			when 8 => CLK <= '0';
+			when 9 => CLK <='1';
+			when 10 => CLK <= '0';
+			when 11 => CLK <='1';
+			when 12=> CLK <='0';
+			when 13=>CLK<='1';
+			when 14 => CLK <= '0';SI <='1';
+			when 15 => CLK <='1'; 
+			when 16 => CLK <='0';SI <= SW(7);
+			when 17 => CLK <='1';
+			when 18 => CLK <='0';SI <= SW(6);
+			when 19 => CLK <='1';
+			when 20 => CLK <='0';SI <= SW(5);
+			when 21 => CLK <='1';
+			when 22 => CLK <='0';SI <= SW(4);
+			when 23 => CLK <='1';
+			when 24 => CLK <='0';SI <= SW(3);
+			when 25 => CLK <='1';
+			when 26 => CLK <='0';SI <= SW(2);
+			when 27 => CLK <='1';
+			when 28 => CLK <='0';SI <= SW(1);
+			when 29 => CLK <='1';
+			when 30 => CLK <='0';SI <= SW(0);
+			when 31 => CLK <='0';
+			when 32 => CLK <='0';CSMCP <= '1';SI<='0';
+			when 33 => CLK <='0';
+			when 34 => CLK <='0';
+			when 35 => CLK <='0';
+			when 36 => CLK <='0';
+			when 37 => CLK <='0';
+			when 38 => CLK <='0';
+			when 39 => CLK <='0';
+			when 40 => CLK <='0';
+			when 41 => CLK <='0';
+			when others => CLK <='0';
+			end case;
+			end if ;
+			GPIO(3) <= CLK;
+			GPIO(4) <= SI;
+			GPIO(5) <= CSMCP;
+			
+			end process MCPTRAM;
+			
+	 
 	 
 	 END architecture;
