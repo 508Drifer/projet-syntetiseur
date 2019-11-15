@@ -130,32 +130,38 @@ library ieee ;
 			when 13=>CLK<='1';
 			when 14 => CLK <= '0';SI <='1';
 			when 15 => CLK <='1'; 
-			when 16 => CLK <='0';SI <= SW(7);
+			--PREMIER OCTET A QUI ON PARLE
+
+			
+			
+			
+			when 16 => CLK <='0';SI <='0';
 			when 17 => CLK <='1';
-			when 18 => CLK <='0';SI <= SW(6);
+			when 18 => CLK <='0';SI <= '0';
 			when 19 => CLK <='1';
-			when 20 => CLK <='0';SI <= SW(5);
+			when 20 => CLK <='0';SI <= '0';
 			when 21 => CLK <='1';
-			when 22 => CLK <='0';SI <= SW(4);
+			when 22 => CLK <='0';SI <= '0';
 			when 23 => CLK <='1';
-			when 24 => CLK <='0';SI <= SW(3);
+			when 24 => CLK <='0';SI <= '0';
 			when 25 => CLK <='1';
-			when 26 => CLK <='0';SI <= SW(2);
+			when 26 => CLK <='0';SI <= '1';
 			when 27 => CLK <='1';
-			when 28 => CLK <='0';SI <= SW(1);
+			when 28 => CLK <='0';SI <= '1';
 			when 29 => CLK <='1';
-			when 30 => CLK <='0';SI <= SW(0);
-			when 31 => CLK <='0';
-			when 32 => CLK <='0';CSMCP <= '1';SI<='0';
-			when 33 => CLK <='0';
+			when 30 => CLK <='0';SI <= '0';
+			when 31 => CLK <='1';
+			
+			when 32 => CLK <='0';
+			when 33 => CLK <='1';
 			when 34 => CLK <='0';
-			when 35 => CLK <='0';
+			when 35 => CLK <='1';
 			when 36 => CLK <='0';
-			when 37 => CLK <='0';
+			when 37 => CLK <='1';
 			when 38 => CLK <='0';
-			when 39 => CLK <='0';
+			when 39 => CLK <='1';
 			when 40 => CLK <='0';
-			when 41 => CLK <='0';
+			when 41 => CLK <='1';
 			when others => CLK <='0';
 			end case;
 			end if ;
