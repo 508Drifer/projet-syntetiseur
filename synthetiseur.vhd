@@ -162,7 +162,7 @@ library ieee ;
 			GPIO(3) <= CLK;
 			GPIO(4) <= SI;
 			GPIO(5) <= CSMCP;
-			
+			GPIO(6) <= horl100;
 			end process MCPTRAM;
 			
 	 
