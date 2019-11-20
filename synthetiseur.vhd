@@ -10,11 +10,7 @@ library ieee ;
 		MAX10_CLK1_50 : in std_logic;
 		KEY : in  bit_vector(1 downto 0);
 		SW : in std_logic_vector(9 downto 0);
-<<<<<<< Updated upstream
-		GPIO : buffer std_logic_vector (10 downto 0)
-=======
 		GPIO : buffer std_logic_vector (35 downto 0)
->>>>>>> Stashed changes
 		); 
     END synthetiseur;
 	 
@@ -64,7 +60,6 @@ library ieee ;
 			if rising_edge(horl100)
 				then adressfal <= adressfal + 1;
 				case adressfal is
-<<<<<<< Updated upstream
 				when 0 => CSDAC <= '0'; SDI <= '1';   --choix de la voie B
 				When 1 => SCK <= '1';
 				When 2 => SDI <= '0'; SCK<='0';
@@ -110,7 +105,7 @@ library ieee ;
 				when 42 => SCK <= '0'; SDI <= '0'; CSDAC <= '1';
 				when 43 => SCK <= '0'; SDI <= '0'; CSDAC <= '1'; adressfal <= 0;
 				when others => SCK <= '0';
-=======
+
 					when 0 => CS <= '0'; SDI <= '1';   --choix de la voie B
 					When 1 => SCK <= '1';
 					When 2 => SDI <= '0'; SCK<='0';
@@ -156,12 +151,12 @@ library ieee ;
 					when 42 => SCK <= '0'; SDI <= '0'; CS <= '1';
 					when 43 => SCK <= '0'; SDI <= '0'; CS <= '1'; adressfal <= 0;
 					when others => SCK <= '0';
->>>>>>> Stashed changes
+
 				end case;
 			end if;
 			GPIO(0) <= SCK;
 			GPIO(1) <= SDI;
-<<<<<<< Updated upstream
+
 			GPIO(2) <= CSDAC;
 			end process DACTRAM;
 			
@@ -307,14 +302,8 @@ library ieee ;
 			GPIO(6) <= horl100;
 			end process MCPTRAM;
 			
-	 
-=======
-			GPIO(2) <= CS;
-			end process test;
 			
-			
-			ADC : Process (horl100)
-			
+			ADC : Process (horl100)		
 			begin
 			if rising_edge (horl100)
 				then adressADC <= adressADC + 1;
@@ -362,6 +351,4 @@ library ieee ;
 			GPIO(35) <= CSADC;
 					
 			end process ADC;
->>>>>>> Stashed changes
-	 
 	 END architecture;
