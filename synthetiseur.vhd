@@ -1,8 +1,8 @@
 library ieee ;
 	use ieee.std_logic_1164.all;
 	use ieee.numeric_std.all;
-
-
+	use ieee.std_logic_arith.all;
+	use ieee.std_logic_unsigned.all;
 	
 	
 	ENTITY synthetiseur is PORT ( 
@@ -13,7 +13,7 @@ library ieee ;
 		GPIO : buffer std_logic_vector (35 downto 0)
 		); 
     END synthetiseur;
-	 
+	  
 	 
 	 
 	 
@@ -30,11 +30,13 @@ library ieee ;
 	 Signal SCKADC : std_logic;
 	 Signal adressADC : integer range 0 to 34;
 	 Signal SAADC : std_logic;
-	 
+	 signal horl800 : std_logic;
 	 Signal CSMCP : std_logic;
 	 Signal SI : std_logic;
 	 Signal CLK : std_logic;
 	 Signal adressMCP : integer range 0 to 130;
+	 Signal ramp : std_logic_vector ( 11 downto 0);
+	 signal compteur1 : integer range 0 to 65;
 	 
 	 
 	 Begin
@@ -49,8 +51,40 @@ library ieee ;
 				compteur <= 0;
 				horl100 <= not horl100;
 			end if ;
+			if compteur1 > 30 then
+				compteur1 <= 0;
+				horl800 <= not horl800;
+				GPIO(8) <= horl800;
+			end if ;		
+
 			end if ;		
 			end process horloge;
+			
+			Test : Process(horl800,ramp)
+			begin
+			if rising_edge(horl800)
+			then
+			ramp <= ramp + '1';
+			GPIO(9) <= ramp(1);
+			end if;
+			
+			
+			
+			
+			
+			end process test;
+			
+			--DACramp : process(horl800,ramp)
+			--begin 
+			--if rising_edge (horl800) then
+			--	ramp <= ramp + '1';
+			--	GPIO(9) <= ramp(11);
+			--end if ;
+			--end process DACramp;
+
+			
+			
+			
 			
 			
 
@@ -120,7 +154,7 @@ library ieee ;
 			then adressMCP <= adressMCP+1;
 			case adressMCP is
 			when 0 => CSMCP <= '0'; SI <='0';
-			when 1 => CLK <= '1';
+			when 1 => CLK <='1';
 			when 2 => CLK <='0'; SI <='1';
 			when 3 => CLK <='1';
 			when 4 => CLK <='0';SI<='0';
@@ -133,9 +167,9 @@ library ieee ;
 			when 11 => CLK <='1';
 			when 12 => CLK <='0';
 			when 13 => CLK <='1';
-			when 14 => CLK <='0';
+			when 14 => CLK <='0';SI <='1';
 			when 15 => CLK <='1';
-			when 16 => CLK <='0';
+			when 16 => CLK <='0';SI <='0';
 			when 17 => CLK <='1';
 			when 18 => CLK <='0';
 			when 19 => CLK <='1';
@@ -167,8 +201,8 @@ library ieee ;
 			when 45 => CLK <='1'; 
 			when 46 => CLK <='0';
 			when 47 => CLK <='1';
-			when 48 => CLK <='0';SI <='0';CSMCP <='1';
-			when 49 => CLK <='1';
+			when 48 => CLK <='0';SI <='0';
+			when 49 => CLK <='0';CSMCP <='1';
 			when 50 => CLK <='0';
 			when 51 => CLK <='0';
 			when 52 => CLK <='0';
@@ -196,7 +230,7 @@ library ieee ;
 			when 71 => CLK <='1';
 			when 72 => CLK <='0';
 			when 73 => CLK <='1';
-			when 74 => CLK <='0';SI<='1';
+			when 74 => CLK <='0';SI<='0';
 			when 75 => CLK <='1';
 			when 76 => CLK <='0';SI<='0';
 			when 77 => CLK <='1';
@@ -224,14 +258,14 @@ library ieee ;
 			when 99 => CLK <='1';
 			when 100 => CLK <='0';
 			when 101 => CLK <='1';
-			when 102 => CLK <='0';
+			when 102 => CLK <='0'; 
 			when 103 => CLK <='1';
 			when 104 => CLK <='0';
 			when 105 => CLK <='1';
 			when 106 => CLK <='0';
 			when 107 => CLK <='1';
-			when 108 => CLK <='0';CSMCP <='1';		
-			when 109 => CLK <='1';
+			when 108 => CLK <='0';		
+			when 109 => CLK <='0';CSMCP <='1';
 			when 110 => CLK <='0';			
 			when 111 => CLK <='0';
 			when 112 => CLK <='0';
@@ -271,42 +305,42 @@ library ieee ;
 			if rising_edge (horl100)
 				then adressADC <= adressADC + 1;
 				case adressADC is
-					when 0 => CSADC <= '1';
-					when 1 => SCKADC <= '1'; SAADC <= '0';
-					when 2 => SCKADC <= '0';
-					when 3 => SCKADC <= '1';
-					when 4 => SCKADC <= '0';
-					when 5 => SCKADC <= '1';
-					when 6 => SCKADC <= '0';
-					when 7 => SCKADC <= '1';
-					when 8 => SCKADC <= '0';
-					when 9 => SCKADC <= '1';
-					when 10 => SCKADC <= '0';
-					when 11 => SCKADC <= '1';
-					when 12 => SCKADC <= '0';
-					when 13 => SCKADC <= '1';
-					when 14 => SCKADC <= '0';
-					when 15 => SCKADC <= '1';
-					when 16 => SCKADC <= '0';
-					when 17 => SCKADC <= '0';
-					when 18 => SCKADC <= '1';
-					when 19 => SCKADC <= '0';
-					when 20 => SCKADC <= '1'; CSADC <= '0';
-					when 21 => SCKADC <= '0';
-					when 22 => SCKADC <= '1';
-					when 23 => SCKADC <= '0';
-					when 24 => SCKADC <= '0';
-					when 25 => SCKADC <= '1'; 
-					when 26 => SCKADC <= '0';
-					when 27 => SCKADC <= '1'; 
-					when 28 => SCKADC <= '0';
-					when 29 => SCKADC <= '1'; 
-					when 30 => SCKADC <= '0';
-					when 31 => SCKADC <= '1';
-					when 32 => SCKADC <= '0';
-					when 33 => SCKADC <= '1';
-					when 34 => SCKADC <= '0'; adressADC <= 0; CSADC <= '1';
-					when others => SCKADC <= '0';
+				when 0 => CSADC <= '1';
+				when 1 => SCKADC <= '1'; SAADC <= '0';
+				when 2 => SCKADC <= '0';
+				when 3 => SCKADC <= '1';
+				when 4 => SCKADC <= '0';
+				when 5 => SCKADC <= '1';
+				when 6 => SCKADC <= '0';
+				when 7 => SCKADC <= '1';
+				when 8 => SCKADC <= '0';
+				when 9 => SCKADC <= '1';
+				when 10 => SCKADC <= '0';
+				when 11 => SCKADC <= '1';
+				when 12 => SCKADC <= '0';
+				when 13 => SCKADC <= '1';
+				when 14 => SCKADC <= '0';
+				when 15 => SCKADC <= '1';
+				when 16 => SCKADC <= '0';
+				when 17 => SCKADC <= '0';
+				when 18 => SCKADC <= '1';
+				when 19 => SCKADC <= '0';
+				when 20 => SCKADC <= '1'; CSADC <= '0';
+				when 21 => SCKADC <= '0';
+				when 22 => SCKADC <= '1';
+				when 23 => SCKADC <= '0';
+				when 24 => SCKADC <= '0';
+				when 25 => SCKADC <= '1'; 
+				when 26 => SCKADC <= '0';
+				when 27 => SCKADC <= '1'; 
+				when 28 => SCKADC <= '0';
+				when 29 => SCKADC <= '1'; 
+				when 30 => SCKADC <= '0';
+				when 31 => SCKADC <= '1';
+				when 32 => SCKADC <= '0';
+				when 33 => SCKADC <= '1';
+				when 34 => SCKADC <= '0'; adressADC <= 0; CSADC <= '1';
+				when others => SCKADC <= '0';
 				end case;
 			end if;
 			GPIO(33) <= SCKADC;
