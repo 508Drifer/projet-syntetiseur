@@ -6,11 +6,12 @@ library ieee ;
 	
 	
 	ENTITY synthetiseur is PORT ( 
-      LEDR : out bit_vector (1 downto 0);
+      LEDR : buffer bit_vector (9 downto 0);
 		MAX10_CLK1_50 : in std_logic;
 		KEY : in  bit_vector(1 downto 0);
 		SW : in std_logic_vector(9 downto 0);
-		GPIO : buffer std_logic_vector (35 downto 0)
+		GPIO : buffer std_logic_vector (35 downto 0);
+		Arduino : in std_logic_vector (15 downto 0)	
 		); 
     END synthetiseur;
 	  
@@ -37,6 +38,7 @@ library ieee ;
 	 Signal adressMCP : integer range 0 to 130;
 	 Signal ramp : std_logic_vector ( 11 downto 0);
 	 signal compteur1 : integer range 0 to 65;
+	 Signal compteurmult : integer range 0 to 3;
 	 
 	 
 	 Begin
@@ -146,150 +148,43 @@ library ieee ;
 
 			GPIO(2) <= CSDAC;
 			end process DACTRAM;
+				
+			
+			MULTENV : Process(horl100,Arduino(0))
+			begin
+			if rising_edge (horl100)
+			then compteurmult <= compteurmult +1;
+				case compteurmult is
+				when 0 => GPIO(3) <='0'; GPIO(4) <= '0';
+				when 1 => GPIO(3) <='1'; GPIO(4) <= '0'; --LEDR(1) <= Arduino(0);
+				when 2 => GPIO(3) <='0'; GPIO(4) <= '1'; --LEDR(2) <= Arduino(0);
+				when 3 => GPIO(3) <='1'; GPIO(4) <= '1'; --LEDR(3) <= Arduino(0);
+				when others => GPIO(3) <='0'; GPIO(4) <= '0';
+				end case;
+			end if;			
+			end process MULTENV;
+			
+			MULTT : Process(Arduino(2),compteurmult,LEDR)
+			begin
+			if compteurmult = 0 then
+				if rising_edge (Arduino(2)) then 
+				LEDR(0) <= '1';
+				LEDR(1) <= '0';
+				end if;
+			end if;			
+			end process MULTT;
+			
+			MULTF : Process(Arduino(2),compteurmult,LEDR)
+			begin
+			if compteurmult = 0 then
+				if falling_edge (Arduino(2)) then 
+				LEDR(2) <= '0';
+				LEDR(3) <= '1';
+				end if;
+			end if;	
 			
 			
-			MCPTRAM : Process(horl100)
-			begin 
-			if rising_edge(horl100)
-			then adressMCP <= adressMCP+1;
-			case adressMCP is
-			when 0 => CSMCP <= '0'; SI <='0';
-			when 1 => CLK <='1';
-			when 2 => CLK <='0'; SI <='1';
-			when 3 => CLK <='1';
-			when 4 => CLK <='0';SI<='0';
-			when 5 => CLK <='1';
-			when 6 => CLK <='0';
-			when 7 => CLK <='1';
-			when 8 => CLK <='0';
-			when 9 => CLK <='1';
-			when 10 => CLK <='0';
-			when 11 => CLK <='1';
-			when 12 => CLK <='0';
-			when 13 => CLK <='1';
-			when 14 => CLK <='0';SI <='1';
-			when 15 => CLK <='1';
-			when 16 => CLK <='0';SI <='0';
-			when 17 => CLK <='1';
-			when 18 => CLK <='0';
-			when 19 => CLK <='1';
-			when 20 => CLK <='0';
-			when 21 => CLK <='1';
-			when 22 => CLK <='0';
-			when 23 => CLK <='1';
-			when 24 => CLK <='0';
-			when 25 => CLK <='1'; 
-			when 26 => CLK <='0';SI <='1';
-			when 27 => CLK <='1';
-			when 28 => CLK <='0';
-			when 29 => CLK <='1';
-			when 30 => CLK <='0';SI <='0';
-			when 31 => CLK <='1';
-			when 32 => CLK <='0';SI <='1';
-			when 33 => CLK <='1';
-			when 34 => CLK <='0';
-			when 35 => CLK <='1'; 
-			when 36 => CLK <='0';
-			when 37 => CLK <='1';
-			when 38 => CLK <='0';
-			when 39 => CLK <='1';
-			when 40 => CLK <='0';
-			when 41 => CLK <='1';
-			when 42 => CLK <='0';
-			when 43 => CLK <='1';
-			when 44 => CLK <='0';
-			when 45 => CLK <='1'; 
-			when 46 => CLK <='0';
-			when 47 => CLK <='1';
-			when 48 => CLK <='0';SI <='0';
-			when 49 => CLK <='0';CSMCP <='1';
-			when 50 => CLK <='0';
-			when 51 => CLK <='0';
-			when 52 => CLK <='0';
-			when 53 => CLK <='0';
-			when 54 => CLK <='0';
-			when 55 => CLK <='0';
-			when 56 => CLK <='0';
-			when 57 => CLK <='0';
-			when 58 => CLK <='0';
-			when 59 => CLK <='0';
-			--fin de trame de set des sorties
-			
-			--début de l'autre trame de lecture
-			when 60 => CLK <='0';SI<='0';CSMCP<='0';
-			when 61 => CLK <='1';
-			when 62 => CLK <='0';SI <='1';
-			when 63 => CLK <='1';
-			when 64 => CLK <='0';SI <='0';
-			when 65 => CLK <='1';
-			when 66 => CLK <='0';
-			when 67 => CLK <='1';
-			when 68 => CLK <='0';
-			when 69 => CLK <='1';
-			when 70 => CLK <='0';
-			when 71 => CLK <='1';
-			when 72 => CLK <='0';
-			when 73 => CLK <='1';
-			when 74 => CLK <='0';SI<='0';
-			when 75 => CLK <='1';
-			when 76 => CLK <='0';SI<='0';
-			when 77 => CLK <='1';
-			when 78 => CLK <='0';
-			when 79 => CLK <='1';
-			when 80 => CLK <='0';
-			when 81 => CLK <='1';
-			when 82 => CLK <='0';
-			when 83 => CLK <='1';
-			when 84 => CLK <='0';SI<='1';
-			when 85 => CLK <='1';
-			when 86 => CLK <='0';SI<='0';
-			when 87 => CLK <='1';
-			when 88 => CLK <='0';
-			when 89 => CLK <='1';
-			when 90 => CLK <='0';SI<='1';
-			when 91 => CLK <='1';
-			when 92 => CLK <='0';SI<='0';
-			when 93 => CLK <='1';
-			when 94 => CLK <='0';
-			when 95 => CLK <='1';
-			when 96 => CLK <='0';
-			when 97 => CLK <='1';
-			when 98 => CLK <='0';
-			when 99 => CLK <='1';
-			when 100 => CLK <='0';
-			when 101 => CLK <='1';
-			when 102 => CLK <='0'; 
-			when 103 => CLK <='1';
-			when 104 => CLK <='0';
-			when 105 => CLK <='1';
-			when 106 => CLK <='0';
-			when 107 => CLK <='1';
-			when 108 => CLK <='0';		
-			when 109 => CLK <='0';CSMCP <='1';
-			when 110 => CLK <='0';			
-			when 111 => CLK <='0';
-			when 112 => CLK <='0';
-			when 113 => CLK <='0';
-			when 114 => CLK <='0';
-			when 115 => CLK <='0';
-			when 116 => CLK <='0';
-			when 117 => CLK <='0';
-			when 118 => CLK <='0';
-			when 119 => CLK <='0';
---fin de trame de lecture	
-			when others => CLK <='0';
-			end case;
-			if adressMCP > 119
-				then adressMCP <= 59;
-			end if ;
-			end if ;
-			GPIO(3) <= CLK;
-			GPIO(4) <= SI;
-			GPIO(5) <= CSMCP;
-			GPIO(6) <= horl100;
-			end process MCPTRAM;	
-			
-			
+			end process MULTF;
 			
 			
 			
